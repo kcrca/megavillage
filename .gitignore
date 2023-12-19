@@ -1,0 +1,13 @@
+.DS_Store
+*.bak
+.*.sw[op]
+.sw[op]
+?
+.?
+/.idea
+*.pyc
+*.zip
+/build/
+scripts/functions
+/venv
+logs/
