@@ -1,20 +1,19 @@
 from pathlib import Path
 
 from pynecraft.base import EQ, r, SOUTH, NORTH
-from pynecraft.commands import scoreboard, execute, e, Score, MINUS, JsonText, function, clone
+from pynecraft.commands import scoreboard, execute, e, Score, MINUS, JsonText, function, clone, tp, s
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
 
-pack = DataPack('magavillage')
+pack = DataPack('megavillage')
 f = pack.functions
 
-do_count_f = f['do_counts'] = Function('do_counts')
-count_f = f['counts'] = Function('counts').add(
-    execute().at(e().tag('accountant')).run(function(do_count_f))
-)
-
 abbrs = {'Leatherworker': 'LeatherWrkr'}
+
+do_count_f = pack.function_set.add(Function('do_counts'))
+count_f = pack.function_set.add(Function('counts').add(
+    execute().at(e().tag('accountant')).run(function(do_count_f))))
 
 
 def sign_line(score):
@@ -50,7 +49,7 @@ for pro in VILLAGER_PROFESSIONS:
     score = Score(pro, 'megavillage')
     do_count_f.add(
         scoreboard().players().set(score, 0),
-        execute().as_(villager.nbt({'Age':0, 'VillagerData': {'profession': f'minecraft:{pro.lower()}'}})).run(
+        execute().as_(villager.nbt({'Age': 0, 'VillagerData': {'profession': f'minecraft:{pro.lower()}'}})).run(
             scoreboard().players().add(score, 1))
     )
     lines.append(sign_line(score))
@@ -64,7 +63,14 @@ for pro in VILLAGER_PROFESSIONS:
 for i in range(1, 8):
     do_count_f.add(clone(r(1, 5, 2), r(-2, 5, -3), r(-2, 5 + i * 4, -3)).filtered('oak_wall_sign'))
 
+pack.function_set.add(Function('none').add(
+    tp(s(), villager.limit(1).nbt({'Age': 0, 'VillagerData': {'profession': 'minecraft:none'}}))
+))
+pack.function_set.add(Function('rescue').add(
+    tp(villager.nbt({'Age': 0, 'VillagerData': {'profession': 'minecraft:none'}}), s())
+))
+fix_f = pack.function_set.add(Function('fix'))
+
 dir = f'{Path.home()}/clarity/home/saves/New World'
 print(dir)
 pack.save(dir)
-
