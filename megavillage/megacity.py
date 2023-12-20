@@ -14,9 +14,13 @@ count_f = f['counts'] = Function('counts').add(
     execute().at(e().tag('accountant')).run(function(do_count_f))
 )
 
+abbrs = {'Leatherworker': 'LeatherWrkr'}
+
 
 def sign_line(score):
     name = score.target.name
+    if name in abbrs:
+        name = abbrs[name]
     return JsonText.text(f'{name}: ').extra(JsonText.score(score))
 
 
@@ -27,7 +31,7 @@ def sign(lines, pos, dir):
 total = Score('Total', 'megavillage')
 adults = Score('Adults', 'megavillage')
 kids = Score('Kids', 'megavillage')
-villager = e().type('villager').distance((0, 50))
+villager = e().type('villager').distance((0, 100))
 do_count_f.add(
     scoreboard().objectives().add(total.objective, ScoreCriteria.DUMMY),
     scoreboard().players().set(total, 0),
@@ -46,7 +50,7 @@ for pro in VILLAGER_PROFESSIONS:
     score = Score(pro, 'megavillage')
     do_count_f.add(
         scoreboard().players().set(score, 0),
-        execute().as_(villager.nbt({'VillagerData': {'profession': f'minecraft:{pro.lower()}'}})).run(
+        execute().as_(villager.nbt({'Age':0, 'VillagerData': {'profession': f'minecraft:{pro.lower()}'}})).run(
             scoreboard().players().add(score, 1))
     )
     lines.append(sign_line(score))
@@ -57,9 +61,10 @@ for pro in VILLAGER_PROFESSIONS:
         do_count_f.add(sign(lines, r(x, 5, 2), NORTH))
         x -= 1
         lines = []
-for i in range(1, 7):
+for i in range(1, 8):
     do_count_f.add(clone(r(1, 5, 2), r(-2, 5, -3), r(-2, 5 + i * 4, -3)).filtered('oak_wall_sign'))
 
 dir = f'{Path.home()}/clarity/home/saves/New World'
 print(dir)
 pack.save(dir)
+
