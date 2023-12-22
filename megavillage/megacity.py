@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from pynecraft.base import EQ, r, SOUTH, NORTH
-from pynecraft.commands import scoreboard, execute, e, Score, MINUS, JsonText, function, clone, tp, s
+from pynecraft.commands import scoreboard, execute, e, Score, MINUS, JsonText, function, clone, tp, s, kill
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
@@ -69,7 +69,9 @@ pack.function_set.add(Function('none').add(
 pack.function_set.add(Function('rescue').add(
     tp(villager.nbt({'Age': 0, 'VillagerData': {'profession': 'minecraft:none'}}), s())
 ))
-fix_f = pack.function_set.add(Function('fix'))
+pack.function_set.add(Function('purge').add(
+    kill(villager.nbt({'Age': 0, 'VillagerData': {'profession': 'minecraft:none'}}))
+))
 
 dir = f'{Path.home()}/clarity/home/saves/New World'
 print(dir)
