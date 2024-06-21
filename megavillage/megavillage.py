@@ -2,9 +2,9 @@ from pathlib import Path
 
 from pynecraft.base import EQ, r, SOUTH, NORTH
 from pynecraft.commands import scoreboard, execute, e, Score, MINUS, JsonText, function, clone, tp, s, kill
-from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
+from pynecraft.values import DUMMY
 
 pack = DataPack('megavillage')
 f = pack.functions
@@ -32,7 +32,7 @@ adults = Score('Adults', 'megavillage')
 kids = Score('Kids', 'megavillage')
 villager = e().type('villager').distance((0, 100))
 do_count_f.add(
-    scoreboard().objectives().add(total.objective, ScoreCriteria.DUMMY),
+    scoreboard().objectives().add(total.objective, DUMMY),
     scoreboard().players().set(total, 0),
     execute().as_(villager).run(scoreboard().players().add(total, 1)),
     scoreboard().players().set(adults, 0),
@@ -73,6 +73,6 @@ pack.function_set.add(Function('purge').add(
     kill(villager.nbt({'Age': 0, 'VillagerData': {'profession': 'minecraft:none'}}))
 ))
 
-dir = f'{Path.home()}/clarity/home/saves/New World'
+dir = f'{Path.home()}/clarity/home/saves/MegaVillage'
 print(dir)
 pack.save(dir)
